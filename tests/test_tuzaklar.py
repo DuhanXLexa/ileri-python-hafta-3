@@ -2,15 +2,6 @@
 # ogrenci numarasi 20253004040
 # tarih 11 10 2026
 # mutable default argument tuzagi testi
-#
-# hatali fonksiyon su sekildeydi:
-#   def yakit_ekle(miktar, depo=[]):
-#       depo.append(miktar)
-#       return depo
-#
-# depo=[] mutable oldugu icin her cagri ayni listeyi kullaniyor
-# cozum: None kalibi ile her seferinde yeni liste olusturmak
-
 
 def yakit_ekle(miktar: int, depo: list[int] | None = None) -> list[int]:
     """depoya yakit ekler, none verilirse yeni liste olusturur"""
@@ -21,7 +12,6 @@ def yakit_ekle(miktar: int, depo: list[int] | None = None) -> list[int]:
 
 
 def test_yakit_ekle_ayri_cagrilar():
-    # iki ayri cagri birbirini etkilememeli
     sonuc1 = yakit_ekle(10)
     sonuc2 = yakit_ekle(20)
     assert sonuc1 == [10]
