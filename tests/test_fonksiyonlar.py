@@ -112,3 +112,23 @@ def test_baglantilar_sirasi():
     g = galaksi_kur(**veri)
     assert g["baglantilar"]["dünya"] == ["centauri", "sirius"]
     assert g["baglantilar"]["sirius"] == ["centauri", "dünya", "orion", "kara_delik"]
+
+
+# gorev 5 - hamle_sayaci ve en_bagli_gezegenler testleri
+
+def test_hamle_sayaci():
+    from uzay_oyunu.araclar import hamle_sayaci
+    sayac = hamle_sayaci()
+    assert sayac() == 1
+    assert sayac() == 2
+    assert sayac() == 3
+
+
+def test_en_bagli_gezegenler():
+    from uzay_oyunu.araclar import en_bagli_gezegenler
+    yol = Path(__file__).parent.parent / "uzay_oyunu" / "galaksi.json"
+    with open(yol, encoding="utf-8") as f:
+        veri = json.load(f)
+    g = galaksi_kur(**veri)
+    assert en_bagli_gezegenler(g) == ["sirius", "centauri", "dünya", "orion", "kara_delik"]
+
