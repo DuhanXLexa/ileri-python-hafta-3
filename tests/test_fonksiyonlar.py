@@ -1,10 +1,12 @@
 # ad soyad duhan goksal
 # ogrenci numarasi 20253004040
 # tarih 11 10 2026
-# saf fonksiyonlar testleri
+# saf fonksiyonlar ve galaksi_kur testleri
 
+import json
+from pathlib import Path
 import pytest
-from uzay_oyunu.oyun import envanter_metni, hedef_menusu
+from uzay_oyunu.oyun import envanter_metni, galaksi_kur, hedef_menusu
 
 
 # envanter_metni testleri
@@ -66,3 +68,47 @@ def test_hedef_uc_tane():
     assert "[1] a" in sonuc
     assert "[2] b" in sonuc
     assert "[3] c" in sonuc
+
+
+# galaksi_kur testleri
+
+def test_galaksi_temel():
+    g = galaksi_kur(
+        ["dünya", "mars"],
+        {"dünya": ["mars"], "mars": ["dünya"]},
+        "dünya",
+        yakit=100,
+    )
+    assert g["konum"] == "dünya"
+    assert g["yakit"] == 100
+    assert "mars" in g["baglantilar"]["dünya"]
+
+
+def test_galaksi_varsayilan_yakit():
+    # yakit verilmezse 50 olmali
+    g = galaksi_kur(["mars"], {"mars": []}, "mars")
+    assert g["yakit"] == 50
+
+
+def test_galaksi_yanlis_baslangic():
+    with pytest.raises(ValueError):
+        galaksi_kur(["mars"], {"mars": []}, "plüton")
+
+
+def test_galaksi_json_yukle():
+    yol = Path(__file__).parent.parent / "uzay_oyunu" / "galaksi.json"
+    with open(yol, encoding="utf-8") as f:
+        veri = json.load(f)
+    g = galaksi_kur(**veri)
+    assert g["konum"] == "dünya"
+    assert g["yakit"] == 100
+
+
+def test_baglantilar_sirasi():
+    # sira korunmali yoksa eski testler bozulur
+    yol = Path(__file__).parent.parent / "uzay_oyunu" / "galaksi.json"
+    with open(yol, encoding="utf-8") as f:
+        veri = json.load(f)
+    g = galaksi_kur(**veri)
+    assert g["baglantilar"]["dünya"] == ["centauri", "sirius"]
+    assert g["baglantilar"]["sirius"] == ["centauri", "dünya", "orion", "kara_delik"]
